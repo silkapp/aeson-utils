@@ -1,0 +1,52 @@
+{-# LANGUAGE CPP #-}
+
+module Data.Aeson.Utils
+  ( module Data.Aeson
+  , module Data.Aeson.Types
+  , fromFloatDigits
+  , (.=?)
+  , withInteger
+  , withParsedNumber
+  , parseNumber
+  ) where
+
+import Data.Aeson
+import Data.Aeson.Types
+import Data.Text (Text)
+import Data.Scientific
+#if ! MIN_VERSION_aeson(0,7,0)
+import Data.Attoparsec.Number
+#endif
+
+-- | ToJSON
+
+(.=?) :: ToJSON a => Text -> Maybe a -> Maybe Pair
+k .=? v = fmap (k .=) v
+{-# INLINE (.=?) #-}
+
+-- | FromJSON
+
+withInteger :: String -> (Integer -> Parser a) -> Value -> Parser a
+withInteger err f v = withParsedNumber err f (const $ typeMismatch err v) v
+
+withParsedNumber :: String -> (Integer -> Parser a) -> (Double -> Parser a) -> Value -> Parser a
+withParsedNumber err f g v =
+#if MIN_VERSION_aeson(0,7,0)
+  case v of
+    Number s -> case parseNumber s of
+      Left  i -> f i
+      Right d -> g d
+    _ -> typeMismatch err v
+#else
+  flip (withNumber err) v $ \n -> case n of
+    I i -> f i
+    D d -> g d
+#endif
+
+parseNumber :: Scientific -> Either Integer Double
+parseNumber n
+    | e >= 0    = Left $ c * 10 ^ e
+    | otherwise = Right $ realToFrac n
+  where
+    e = base10Exponent n
+    c = coefficient n
