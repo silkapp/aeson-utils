@@ -8,12 +8,16 @@ module Data.Aeson.Utils
   , withInteger
   , withParsedNumber
   , parseNumber
+  , (.:*)
+  , (.:?*)
   ) where
 
+import Control.Monad
 import Data.Aeson
 import Data.Aeson.Types
 import Data.Text (Text)
 import Data.Scientific
+import qualified Data.HashMap.Strict as H
 #if ! MIN_VERSION_aeson(0,7,0)
 import Data.Attoparsec.Number
 #endif
@@ -50,3 +54,21 @@ parseNumber n
   where
     e = base10Exponent n
     c = coefficient n
+
+-- Lookup nested keys
+-- Author: Petr Pudlák http://stackoverflow.com/a/18003411/182603
+
+lookupE :: Value -> Text -> Either String Value
+lookupE (Object obj) key = case H.lookup key obj of
+        Nothing -> Left $ "key " ++ show key ++ " not present"
+        Just v  -> Right v
+lookupE _            _   = Left $ "not an object"
+
+(.:*) :: FromJSON a => Value -> [Text] -> Parser a
+(.:*) value = parseJSON <=< foldM ((either fail return .) . lookupE) value
+
+(.:?*) :: FromJSON a => Value -> [Text] -> Parser (Maybe a)
+(.:?*) value = either (\_ -> return Nothing) (liftM Just . parseJSON)
+             . foldM lookupE value
+-- Or more simply using Control.Alternative.optional
+-- (.:?*) value keys = optional $ value .:* keys
