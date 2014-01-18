@@ -25,15 +25,18 @@ import Data.Attoparsec.Number
 
 -- | ToJSON
 
+-- | Optionally create a Pair.
 (.=?) :: ToJSON a => Text -> Maybe a -> Maybe Pair
 k .=? v = fmap (k .=) v
 {-# INLINE (.=?) #-}
 
 -- | FromJSON
 
+-- | Match on integer numbers
 withInteger :: String -> (Integer -> Parser a) -> Value -> Parser a
 withInteger err f v = withParsedNumber err f (const $ typeMismatch err v) v
 
+-- | Match on numbers with one callback for Integers and one for Doubles.
 withParsedNumber :: String -> (Integer -> Parser a) -> (Double -> Parser a) -> Value -> Parser a
 withParsedNumber err f g v =
 #if MIN_VERSION_aeson(0,7,0)
@@ -48,6 +51,8 @@ withParsedNumber err f g v =
     D d -> g d
 #endif
 
+-- | Convert a Scientific into an Integer if it doesn't have decimal points,
+-- otherwise to a Double.
 parseNumber :: Scientific -> Either Integer Double
 parseNumber n
     | e >= 0    = Left $ c * 10 ^ e
@@ -59,9 +64,11 @@ parseNumber n
 -- Lookup nested keys
 -- Author: Petr Pudlák http://stackoverflow.com/a/18003411/182603
 
+-- | Look up nested keys
 (.:*) :: FromJSON a => Value -> [Text] -> Parser a
 (.:*) v = parseJSON <=< foldM ((either fail return .) . lookupE) v
 
+-- | Optionally look up nested keys
 (.:?*) :: FromJSON a => Value -> [Text] -> Parser (Maybe a)
 (.:?*) v ks = optional $ v .:* ks
 
