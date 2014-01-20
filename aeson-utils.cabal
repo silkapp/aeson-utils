@@ -20,7 +20,7 @@ library
   build-depends:
       base
     , aeson                >= 0.6  && < 0.8
-    , attoparsec           >= 0.18 && < 0.12
+    , attoparsec
     , scientific           == 0.2.*
     , text                 >= 0.11 && < 1.2
     , unordered-containers == 0.2.*
