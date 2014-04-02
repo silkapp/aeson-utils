@@ -7,8 +7,6 @@ module Data.Aeson.Utils
   , decodeV
   , fromFloatDigits
   , (.=?)
-  , withInteger
-  , withParsedNumber
   , parseNumber
   , (.:*)
   , (.:?*)
@@ -25,9 +23,6 @@ import Data.Attoparsec.Lazy (Result (..))
 import qualified Data.Attoparsec.Lazy as Atto
 import qualified Data.ByteString.Lazy as L
 import qualified Data.HashMap.Strict  as H
-#if ! MIN_VERSION_aeson(0,7,0)
-import Data.Attoparsec.Number
-#endif
 
 -- | Parsing
 
@@ -49,27 +44,6 @@ decodeV = either (const Nothing) Just . eitherDecodeV
 (.=?) :: ToJSON a => Text -> Maybe a -> Maybe Pair
 k .=? v = fmap (k .=) v
 {-# INLINE (.=?) #-}
-
--- | FromJSON
-
--- | Match on integer numbers
-withInteger :: String -> (Integer -> Parser a) -> Value -> Parser a
-withInteger err f v = withParsedNumber err f (const $ typeMismatch err v) v
-
--- | Match on numbers with one callback for Integers and one for Doubles.
-withParsedNumber :: String -> (Integer -> Parser a) -> (Double -> Parser a) -> Value -> Parser a
-withParsedNumber err f g v =
-#if MIN_VERSION_aeson(0,7,0)
-  case v of
-    Number s -> case parseNumber s of
-      Left  i -> f i
-      Right d -> g d
-    _ -> typeMismatch err v
-#else
-  flip (withNumber err) v $ \n -> case n of
-    I i -> f i
-    D d -> g d
-#endif
 
 -- | Convert a Scientific into an Integer if it doesn't have decimal points,
 -- otherwise to a Double.
