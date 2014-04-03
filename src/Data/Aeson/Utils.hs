@@ -8,12 +8,8 @@ module Data.Aeson.Utils
   , fromFloatDigits
   , (.=?)
   , parseNumber
-  , (.:*)
-  , (.:?*)
   ) where
 
-import Control.Applicative
-import Control.Monad
 import Data.Aeson
 import Data.Aeson.Parser (value)
 import Data.Aeson.Types
@@ -22,7 +18,6 @@ import Data.Text            (Text)
 import Data.Attoparsec.Lazy (Result (..))
 import qualified Data.Attoparsec.Lazy as Atto
 import qualified Data.ByteString.Lazy as L
-import qualified Data.HashMap.Strict  as H
 
 -- | Parsing
 
@@ -54,21 +49,3 @@ parseNumber n
   where
     e = base10Exponent n
     c = coefficient n
-
--- Lookup nested keys
--- Author: Petr Pudlák http://stackoverflow.com/a/18003411/182603
-
--- | Look up nested keys
-(.:*) :: FromJSON a => Value -> [Text] -> Parser a
-(.:*) v = parseJSON <=< foldM ((either fail return .) . lookupE) v
-
--- | Optionally look up nested keys
-(.:?*) :: FromJSON a => Value -> [Text] -> Parser (Maybe a)
-(.:?*) v ks = optional $ v .:* ks
-
-lookupE :: Value -> Text -> Either String Value
-lookupE o key = case o of
-  Object obj -> case H.lookup key obj of
-    Nothing -> Left $ "key " ++ show key ++ " not present"
-    Just v  -> Right v
-  _ -> Left $ "not an object"
