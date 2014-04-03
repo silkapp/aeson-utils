@@ -1,7 +1,7 @@
 name:                aeson-utils
 version:             0.2.1
-synopsis:            Utilities for defining custom Aeson instances
-description:         Utilities for defining custom Aeson instances
+synopsis:            Utilities for working with Aeson.
+description:         Utilities for working with Aeson.
 license:             BSD3
 license-file:        LICENSE
 author:              Silk. B.V.

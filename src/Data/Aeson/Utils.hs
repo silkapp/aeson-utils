@@ -1,10 +1,14 @@
 {-# LANGUAGE CPP #-}
 
+-- | This module provides a few small functions to make working with
+-- aeson easier. Hopefully at some point they won't be needed anymore.
 module Data.Aeson.Utils
   ( module Data.Aeson
   , module Data.Aeson.Types
-  , eitherDecodeV
+  -- * Parsing values
   , decodeV
+  , eitherDecodeV
+  -- * Utilities
   , fromFloatDigits
   , (.=?)
   , parseNumber
@@ -19,10 +23,9 @@ import Data.Attoparsec.Lazy (Result (..))
 import qualified Data.Attoparsec.Lazy as Atto
 import qualified Data.ByteString.Lazy as L
 
--- | Parsing
+-- * Parsing values
 
--- Allows atomic values on the top level
-
+-- | Like 'decodeV', but returns an error message when decoding fails.
 eitherDecodeV :: FromJSON a => L.ByteString -> Either String a
 eitherDecodeV v = case Atto.parse value v of
   Fail _ _ err -> Left err
@@ -30,10 +33,11 @@ eitherDecodeV v = case Atto.parse value v of
     Error e   -> Left e
     Success a -> Right a
 
+-- | Deserialize any JSON value. Allows atomic values on the top level
 decodeV :: FromJSON a => L.ByteString -> Maybe a
 decodeV = either (const Nothing) Just . eitherDecodeV
 
--- | ToJSON
+-- * Utilities
 
 -- | Optionally create a Pair.
 (.=?) :: ToJSON a => Text -> Maybe a -> Maybe Pair
