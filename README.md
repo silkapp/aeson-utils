@@ -9,13 +9,13 @@ It provides `eitherDecodeV` and `decodeV` functions (analogous to `eitherDecode`
 The package also contains the `.=?` operator that you can use to optionally construct object pairs:
 
 ```haskell
-object
-  [ "a" .: foo
-  , "b" .: bar
+object (
+  [ "a" .= foo
+  , "b" .= bar
   ] ++ catMaybes
-  [ "c" .:? mBaz
-  , "d" .:? mQux
-  ]
+  [ "c" .=? mBaz
+  , "d" .=? mQux
+  ])
 ```
 
 Finally it has a `parseNumber` function that converts a scientific into `Either Integer Double` in case you want to distinguish between integrals and fractionals.
