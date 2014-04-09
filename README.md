@@ -20,9 +20,9 @@ object
 
 Finally it has a `parseNumber` function that converts a scientific into `Either Integer Double` in case you want to distinguish between integrals and fractionals.
 
-## Install instructions
+## Installation instructions
 
-aeson-utils is available on hackage
+[aeson-utils is available on hackage](http://hackage.haskell.org/package/aeson-utils)
 
 ```
 cabal install aeson-utils
