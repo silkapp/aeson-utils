@@ -1,5 +1,3 @@
-{-# LANGUAGE CPP #-}
-
 -- | This module provides a few small functions to make working with
 -- aeson easier. Hopefully at some point they won't be needed anymore.
 module Data.Aeson.Utils
