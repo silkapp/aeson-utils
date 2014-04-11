@@ -15,9 +15,9 @@ module Data.Aeson.Utils
 import Data.Aeson
 import Data.Aeson.Parser (value)
 import Data.Aeson.Types
-import Data.Scientific
-import Data.Text            (Text)
 import Data.Attoparsec.Lazy (Result (..))
+import Data.Scientific
+import Data.Text (Text)
 import qualified Data.Attoparsec.Lazy as Atto
 import qualified Data.ByteString.Lazy as L
 
