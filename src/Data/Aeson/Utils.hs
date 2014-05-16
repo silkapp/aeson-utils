@@ -10,6 +10,7 @@ module Data.Aeson.Utils
   , fromFloatDigits
   , (.=?)
   , parseNumber
+  , floatingOrInteger
   ) where
 
 import Data.Aeson
@@ -45,9 +46,5 @@ k .=? v = fmap (k .=) v
 -- | Convert a Scientific into an Integer if it doesn't have decimal points,
 -- otherwise to a Double.
 parseNumber :: Scientific -> Either Integer Double
-parseNumber n
-    | e >= 0    = Left $ c * 10 ^ e
-    | otherwise = Right $ realToFrac n
-  where
-    e = base10Exponent n
-    c = coefficient n
+parseNumber = either Right Left . floatingOrInteger
+{-# DEPRECATED parseNumber "Use Data.Scientific.floatingOrInteger instead" #-}
