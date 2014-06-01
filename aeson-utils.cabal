@@ -1,5 +1,5 @@
 name:                aeson-utils
-version:             0.2.2.0
+version:             0.2.2.1
 synopsis:            Utilities for working with Aeson.
 description:         Utilities for working with Aeson.
 license:             BSD3
