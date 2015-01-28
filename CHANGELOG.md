@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3
+
+* The semantics of `eitherDecodeV` and `decodeV` have been changed to conform to aeson's `eitherDecode` and `decode`: They now consume until end of input and strip trailing whitespace.
+
+  This is necessary to remove ambiguity when decoding JSON-like values that are
+  not necessarily properly formatted for JSON. For example, parsing a hexadecimal
+  digit sequence that starts with digits but does not have double quotes should
+  fail to parse rather than be interpreted as a number.
+
 #### 0.2.2.1
 
 * Allow `attoparsec 0.12.*`
