@@ -1,5 +1,9 @@
 # Changelog
 
+#### 0.3.0.1
+
+* Allow `attoparsec 0.13.*`
+
 ## 0.3
 
 * The semantics of `eitherDecodeV` and `decodeV` have been changed to conform to aeson's `eitherDecode` and `decode`: They now consume until end of input and strip trailing whitespace.
