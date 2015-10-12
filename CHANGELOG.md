@@ -3,6 +3,7 @@
 #### 0.3.0.2
 
 * Allow `aeson 0.9.*`. Because of the aeson release `eitherDecodeV` and `decodeV` now behave the same as `eitherDecode` and `decode` respectively, this package can still be used as a compatibility layer.
+* (revision) Allow `aeson 0.10.*`.
 
 #### 0.3.0.1
 
