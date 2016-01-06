@@ -13,7 +13,7 @@ module Data.Aeson.Utils
   , floatingOrInteger
   ) where
 
-import Control.Applicative ((<*))
+import qualified Control.Applicative as A ((<*))
 import Data.Aeson
 import Data.Aeson.Parser (value)
 import Data.Aeson.Types
@@ -28,7 +28,7 @@ import qualified Data.ByteString.Lazy as L
 
 -- | Like 'decodeV', but returns an error message when decoding fails.
 eitherDecodeV :: FromJSON a => L.ByteString -> Either String a
-eitherDecodeV v = case Atto.parse (value <* Atto.skipSpace <* Atto.endOfInput) v of
+eitherDecodeV v = case Atto.parse (value A.<* Atto.skipSpace A.<* Atto.endOfInput) v of
   Fail _ _ err -> Left err
   Done _ r     -> case fromJSON r of
     Error e   -> Left e
